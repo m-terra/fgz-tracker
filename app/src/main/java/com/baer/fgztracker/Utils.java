@@ -22,6 +22,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class Utils {
 
+	private static final int ONGOING_NOTIFICATION_ID = 257896;
+
 	static void updateOngoingNotification(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String text = prefs.getString(CheckerService.RESULT, "Not checked yet");
@@ -30,8 +32,8 @@ class Utils {
 
 	static void scheduleDaily(Context context) {
 		Calendar alarmTime = Calendar.getInstance();
-		alarmTime.set(Calendar.HOUR_OF_DAY, 16);
-		alarmTime.set(Calendar.MINUTE, 0);
+		alarmTime.set(Calendar.HOUR_OF_DAY, 15);
+		alarmTime.set(Calendar.MINUTE, 55);
 		alarmTime.set(Calendar.SECOND, 0);
 		if (Calendar.getInstance().after(alarmTime)) {
 			alarmTime.add(Calendar.DATE, 1);
@@ -41,11 +43,25 @@ class Utils {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
 				AlarmManager.INTERVAL_DAY, pi);
+
+		updateOngoingNotification(context);
+	}
+
+	static void cancelDaily(Context context){
+		PendingIntent pi = PendingIntent.getService(context, 22,
+				new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		am.cancel(pi);
+
+		removeOngoingNotification(context);
+	}
+
+	private static void removeOngoingNotification(Context context) {
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancel(ONGOING_NOTIFICATION_ID);
 	}
 
 	private static void createOngoingNotification(Context context, String text) {
-		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
@@ -57,7 +73,9 @@ class Utils {
 				.setStyle(bigTextStyle)
 				.setPriority(Notification.PRIORITY_MIN).build();
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
-		mNotifyMgr.notify(257896, notification);
+
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
 	}
 
 	static void createAlertNotification(Context context, String text, Intent intent) {

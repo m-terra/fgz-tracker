@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="HomeInputStyle">
+        <item name="titleMarginTop">@dimen/margin_normal</item>
+        <item name="titleMarginBottom">@dimen/margin_normal</item>
+        <item name="titleMarginStart">@dimen/margin_normal</item>
+        <item name="titleMarginEnd">@dimen/margin_normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

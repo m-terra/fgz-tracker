@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/activity_main"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -11,8 +11,48 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.baer.fgztracker.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"/>
-</RelativeLayout>
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/enableSwitch"
+        style="@style/HomeInputStyle"
+        android:text="@string/enable_tracker"/>
+
+    <android.support.design.widget.TextInputLayout
+        style="@style/HomeInputStyle"
+        android:hint="@string/interval">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        style="@style/HomeInputStyle"
+        android:hint="@string/start_hour">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/hour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        style="@style/HomeInputStyle"
+        android:hint="@string/start_minute">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/minute"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

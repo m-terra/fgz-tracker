@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FGZ Tracker</string>
+    <string name="enable_tracker">Enable Site Monitoring</string>
+    <string name="start_hour">Start Hour</string>
+    <string name="start_minute">Start Minute</string>
+    <string name="interval">Checking Interval in Minutes</string>
 </resources>
