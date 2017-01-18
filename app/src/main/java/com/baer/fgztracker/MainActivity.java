@@ -12,7 +12,6 @@ import android.widget.TimePicker;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-	private TextView urlView;
 	private NumberPicker intervalPicker;
 	private NumberPicker repeatCountPicker;
 	private TimePicker startTimePicker;
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		urlView = (TextView) findViewById(R.id.url);
+		TextView urlView = (TextView) findViewById(R.id.url);
 		urlView.setText(UserPrefs.getTrackingUrl(this));
 
 		intervalPicker = (NumberPicker) findViewById(R.id.interval);
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		UserPrefs.setHourMinuteIntervalRepeatCount(this, hour, min, interv, repCnt);
 
 		if (UserPrefs.getEnabled(this)) {
-			Utils.scheduleDaily(this);
+			Utils.scheduleDaily(this, hour, min);
 		}
 	}
 

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -23,9 +24,13 @@ class Utils {
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
 
 	static void scheduleDaily(Context context) {
+		scheduleDaily(context, UserPrefs.getHour(context), UserPrefs.getMinute(context));
+	}
+
+	static void scheduleDaily(Context context, int hour, int minute) {
 		Calendar alarmTime = Calendar.getInstance();
-		alarmTime.set(Calendar.HOUR_OF_DAY, UserPrefs.getHour(context));
-		alarmTime.set(Calendar.MINUTE, UserPrefs.getMinute(context));
+		alarmTime.set(Calendar.HOUR_OF_DAY, hour);
+		alarmTime.set(Calendar.MINUTE, minute);
 		alarmTime.set(Calendar.SECOND, 0);
 		if (Calendar.getInstance().after(alarmTime)) {
 			alarmTime.add(Calendar.DATE, 1);
@@ -37,6 +42,8 @@ class Utils {
 				AlarmManager.INTERVAL_DAY, pi);
 
 		updateOngoingNotification(context);
+
+		Log.d("CheckerService", "Checking schedules for " + alarmTime);
 	}
 
 	static void cancelDaily(Context context) {

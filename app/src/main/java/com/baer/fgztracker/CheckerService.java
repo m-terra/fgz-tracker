@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,7 +67,7 @@ public class CheckerService extends Service {
 		pendingIntent = null;
 	}
 
-	private void houseFoundAlert(Context context) {
+	private void createChangeDetectedAlert(Context context) {
 		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UserPrefs.getTrackingUrl(context)));
 		Utils.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
@@ -89,8 +90,9 @@ public class CheckerService extends Service {
 
 	private String fetchPage() {
 		try {
-			URL url = new URL(UserPrefs.getTrackingUrl(this));
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			String url = UserPrefs.getTrackingUrl(this);
+			Log.d("CheckerService", "Fetching content from url: " + url);
+			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 			conn.setDoOutput(false);
 			conn.setDoInput(true);
 			conn.setRequestMethod("GET");
@@ -122,8 +124,7 @@ public class CheckerService extends Service {
 			UserPrefs.setSiteContentAndResult(this, newContent, "No Change: " + time);
 		} else {
 			UserPrefs.setSiteContentAndResult(this, newContent, "Change detected: " + time);
-			houseFoundAlert(this);
-			cancelRepeating();
+			createChangeDetectedAlert(this);
 		}
 	}
 
