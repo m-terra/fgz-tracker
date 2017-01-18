@@ -36,15 +36,13 @@ public class CheckerService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		runChecker();
 		if (pendingIntent == null) {
 			scheduleRepeating();
 			runChecker();
-		} else if (checkCount > UserPrefs.getRepeatCount(this)) {
+		} else if (checkCount >= UserPrefs.getRepeatCount(this)) {
 			cancelRepeating();
 		} else {
 			runChecker();
-			checkCount++;
 		}
 		return Service.START_NOT_STICKY;
 	}
@@ -82,6 +80,7 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
+				checkCount++;
 				compareContent(newContent);
 				Utils.updateOngoingNotification(CheckerService.this);
 			}

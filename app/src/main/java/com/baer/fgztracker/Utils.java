@@ -43,7 +43,7 @@ class Utils {
 
 		updateOngoingNotification(context);
 
-		Log.d("CheckerService", "Checking schedules for " + alarmTime);
+		Log.d("CheckerService", "Scheduled daily check at " + alarmTime);
 	}
 
 	static void cancelDaily(Context context) {
@@ -61,12 +61,20 @@ class Utils {
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
 
+		Intent intent = new Intent(context, MainActivity.class);
+
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 710,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 		Notification notification = new NotificationCompat.Builder(context)
 				.setSmallIcon(R.drawable.ic_house)
 				.setContentTitle(context.getString(R.string.app_name))
 				.setContentText(text)
 				.setStyle(bigTextStyle)
-				.setPriority(Notification.PRIORITY_MIN).build();
+				.setPriority(Notification.PRIORITY_MIN)
+				.setContentIntent(pendingIntent).build();
+
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -79,13 +87,11 @@ class Utils {
 	}
 
 	static void createAlertNotification(Context context, String text, Intent intent) {
-		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 715,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Notification notification = new NotificationCompat.Builder(context)
@@ -98,6 +104,8 @@ class Utils {
 				.setContentIntent(pendingIntent).build();
 
 		notification.defaults = Notification.DEFAULT_ALL;
+
+		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		mNotifyMgr.notify(98745, notification);
 	}
 
