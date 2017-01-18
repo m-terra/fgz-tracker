@@ -48,11 +48,11 @@ class UserPrefs {
 	}
 
 	static int getInterval(Context context) {
-		return getPreferences(context).getInt("interval", 2);
+		return getPreferences(context).getInt("interval", 1);
 	}
 
 	static int getRepeatCount(Context context) {
-		return getPreferences(context).getInt("repeatCount", 17);
+		return getPreferences(context).getInt("repeatCount", 30);
 	}
 
 	static void setHourMinuteIntervalRepeatCount(Context context, int hour, int minute,

@@ -41,7 +41,7 @@ class Utils {
 		am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
 				AlarmManager.INTERVAL_DAY, pi);
 
-		updateOngoingNotification(context);
+		updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
 
 		Log.d("CheckerService", "Scheduled daily check at " + alarmTime);
 	}
@@ -55,8 +55,7 @@ class Utils {
 		removeOngoingNotification(context);
 	}
 
-	static void updateOngoingNotification(Context context) {
-		String text = UserPrefs.getTrackingResult(context);
+	static void updateOngoingNotification(Context context, String text) {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
