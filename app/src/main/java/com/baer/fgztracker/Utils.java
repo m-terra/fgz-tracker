@@ -6,8 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import java.io.Closeable;
@@ -24,16 +22,10 @@ class Utils {
 
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
 
-	static void updateOngoingNotification(Context context) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		String text = prefs.getString(CheckerService.RESULT, "Not checked yet");
-		createOngoingNotification(context, text);
-	}
-
 	static void scheduleDaily(Context context) {
 		Calendar alarmTime = Calendar.getInstance();
-		alarmTime.set(Calendar.HOUR_OF_DAY, 15);
-		alarmTime.set(Calendar.MINUTE, 55);
+		alarmTime.set(Calendar.HOUR_OF_DAY, UserPrefs.getHour(context));
+		alarmTime.set(Calendar.MINUTE, UserPrefs.getMinute(context));
 		alarmTime.set(Calendar.SECOND, 0);
 		if (Calendar.getInstance().after(alarmTime)) {
 			alarmTime.add(Calendar.DATE, 1);
@@ -47,7 +39,7 @@ class Utils {
 		updateOngoingNotification(context);
 	}
 
-	static void cancelDaily(Context context){
+	static void cancelDaily(Context context) {
 		PendingIntent pi = PendingIntent.getService(context, 22,
 				new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -56,12 +48,8 @@ class Utils {
 		removeOngoingNotification(context);
 	}
 
-	private static void removeOngoingNotification(Context context) {
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.cancel(ONGOING_NOTIFICATION_ID);
-	}
-
-	private static void createOngoingNotification(Context context, String text) {
+	static void updateOngoingNotification(Context context) {
+		String text = UserPrefs.getTrackingResult(context);
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
@@ -76,6 +64,11 @@ class Utils {
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+	}
+
+	private static void removeOngoingNotification(Context context) {
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancel(ONGOING_NOTIFICATION_ID);
 	}
 
 	static void createAlertNotification(Context context, String text, Intent intent) {

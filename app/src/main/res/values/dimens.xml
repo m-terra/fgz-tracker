@@ -3,4 +3,10 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="margin_normal">10dp</dimen>
+    <dimen name="margin_min">2dp</dimen>
+
+    <dimen name="picker_height">80dp</dimen>
+    <dimen name="picker_width">80dp</dimen>
+
+
 </resources>

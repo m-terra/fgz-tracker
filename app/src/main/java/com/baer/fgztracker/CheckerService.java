@@ -5,12 +5,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,11 +23,6 @@ import java.util.Locale;
 public class CheckerService extends Service {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm:ss", Locale.getDefault());
-	public static final String targetUrl = "https://www.timeanddate.com/worldclock/personal.html";
-	//public static final String targetUrl = "https://fgzzh.emonitor.ch";
-	public static final String viewUrl = "http://www.fgzzh.ch/index.cfm?Nav=22";
-	public static final String CONTENT = "CONTENT";
-	public static final String RESULT = "RESULT";
 	private static final String FAILURE = "FAILURE ";
 	private PendingIntent pendingIntent;
 	private int checkCount;
@@ -46,7 +39,7 @@ public class CheckerService extends Service {
 		if (pendingIntent == null) {
 			scheduleRepeating();
 			runChecker();
-		} else if (checkCount > 17) {
+		} else if (checkCount > UserPrefs.getRepeatCount(this)) {
 			cancelRepeating();
 		} else {
 			runChecker();
@@ -61,8 +54,9 @@ public class CheckerService extends Service {
 		pendingIntent = PendingIntent.getService(this,
 				44, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+		int interval = UserPrefs.getInterval(this) * 60 * 1000;
 		alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-				SystemClock.elapsedRealtime() + 2000 * 60, 2000 * 60, pendingIntent);
+				SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
 	}
 
 	private void cancelRepeating() {
@@ -73,7 +67,7 @@ public class CheckerService extends Service {
 	}
 
 	private void houseFoundAlert(Context context) {
-		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(viewUrl));
+		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UserPrefs.getTrackingUrl(context)));
 		Utils.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
 
@@ -85,18 +79,17 @@ public class CheckerService extends Service {
 			}
 
 			@Override
-			protected void onPostExecute(String currContent) {
-				super.onPostExecute(currContent);
-				compareContent(currContent);
+			protected void onPostExecute(String newContent) {
+				super.onPostExecute(newContent);
+				compareContent(newContent);
 				Utils.updateOngoingNotification(CheckerService.this);
 			}
 		}.execute();
 	}
 
-
 	private String fetchPage() {
 		try {
-			URL url = new URL(targetUrl);
+			URL url = new URL(UserPrefs.getTrackingUrl(this));
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(false);
 			conn.setDoInput(true);
@@ -118,25 +111,19 @@ public class CheckerService extends Service {
 		}
 	}
 
-	private void compareContent(String currContent) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		String prevContent = prefs.getString(CONTENT, null);
+	private void compareContent(String newContent) {
+		String prevContent = UserPrefs.getSiteContent(this);
 		String time = sdf.format(new Date());
-		if (StringUtils.startsWith(currContent, FAILURE)) {
-			prefs.edit().putString(RESULT, currContent).apply();
+		if (StringUtils.startsWith(newContent, FAILURE)) {
+			UserPrefs.setTrackingResult(this, newContent);
 		} else if (StringUtils.isEmpty(prevContent)) {
-			prefs.edit().putString(CONTENT, currContent)
-					.putString(RESULT, "First Checked: " + time).apply();
+			UserPrefs.setSiteContentAndResult(this, newContent, "First Checked: " + time);
+		} else if (StringUtils.equals(prevContent, newContent)) {
+			UserPrefs.setSiteContentAndResult(this, newContent, "No Change: " + time);
 		} else {
-			if (StringUtils.equals(prevContent, currContent)) {
-				prefs.edit().putString(CONTENT, currContent)
-						.putString(RESULT, "No Change: " + time).apply();
-			} else {
-				prefs.edit().putString(CONTENT, currContent)
-						.putString(RESULT, "Change detected: " + time).apply();
-				houseFoundAlert(this);
-				cancelRepeating();
-			}
+			UserPrefs.setSiteContentAndResult(this, newContent, "Change detected: " + time);
+			houseFoundAlert(this);
+			cancelRepeating();
 		}
 	}
 

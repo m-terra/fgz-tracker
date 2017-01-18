@@ -1,10 +1,7 @@
-Android Service that checks the FGZ ZH rentable objects website for changes
+Android Service that checks a website for changes during a certain time window
 
-Checks are done at the relevant times:
-- Weekdays 16.00 - 16.30
-- Every two minutes.
+Config Options:
 
-TODO
-- Skip Weekends
-- Add UI for Start/Stop
-- Configureable timewindow and interval
+- daily start time
+- check interval
+- check count
