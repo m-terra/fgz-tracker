@@ -11,7 +11,9 @@ import android.util.Log;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -21,6 +23,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class Utils {
 
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
 
 	static void scheduleDaily(Context context) {
@@ -43,7 +46,7 @@ class Utils {
 
 		updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
 
-		Log.d("CheckerService", "Scheduled daily check at " + alarmTime);
+		Log.d("CheckerService", "Scheduled daily check at " + sdf.format(alarmTime.getTime()));
 	}
 
 	static void cancelDaily(Context context) {
