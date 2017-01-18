@@ -76,6 +76,7 @@ class Utils {
 				.setContentText(text)
 				.setStyle(bigTextStyle)
 				.setAutoCancel(true)
+				.setPriority(Notification.PRIORITY_MAX)
 				.setContentIntent(pendingIntent).build();
 
 		notification.defaults = Notification.DEFAULT_ALL;
