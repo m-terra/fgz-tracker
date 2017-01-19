@@ -59,7 +59,14 @@ class Utils {
 		String text = UserPrefs.getTrackingResult(context);
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
-		bigTextStyle.bigText(text);
+		StringBuilder sb = new StringBuilder(text);
+		sb.append("\n- Checks start daily at ");
+		sb.append(UserPrefs.getHour(context)).append(":");
+		sb.append(UserPrefs.getMinute(context));
+		sb.append("\n- Checking interval is ").append(UserPrefs.getInterval(context)).append(" min");
+		sb.append("\n- Check is repeated ").append(UserPrefs.getRepeatCount(context)).append(" times");
+		sb.append("\n- Traget url is ").append(UserPrefs.getTrackingUrl(context));
+		bigTextStyle.bigText(sb);
 
 		Notification notification = new NotificationCompat.Builder(context)
 				.setSmallIcon(R.drawable.ic_house)
