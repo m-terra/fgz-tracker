@@ -124,7 +124,7 @@ public class CheckerService extends Service {
 			} else if (StringUtils.equals(prevContent, newContent)) {
 				result = "no change at " + time;
 			} else {
-				result = "change detected at " + time;
+				result = "change found at " + time;
 				createChangeDetectedAlert(this);
 			}
 			UserPrefs.setSiteContentAndResult(this, newContent, result);

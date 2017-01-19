@@ -67,8 +67,8 @@ class Utils {
 		sb.append("\ndaily ");
 		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getHour(context)), 2, "0")).append(":");
 		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getMinute(context)), 2, "0"));
-		sb.append(" > interval ").append(UserPrefs.getInterval(context)).append("min");
 		sb.append(" > repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
+		sb.append(" > interval ").append(UserPrefs.getInterval(context)).append("min");
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
