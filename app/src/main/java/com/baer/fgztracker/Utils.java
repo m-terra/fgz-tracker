@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -63,10 +65,10 @@ class Utils {
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		StringBuilder sb = new StringBuilder(text);
 		sb.append("\ndaily ");
-		sb.append(UserPrefs.getHour(context)).append(":");
-		sb.append(UserPrefs.getMinute(context));
-		sb.append(" interval ").append(UserPrefs.getInterval(context)).append("min");
-		sb.append(" repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
+		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getHour(context)), 2, "0")).append(":");
+		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getMinute(context)), 2, "0"));
+		sb.append(" > interval ").append(UserPrefs.getInterval(context)).append("min");
+		sb.append(" > repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
