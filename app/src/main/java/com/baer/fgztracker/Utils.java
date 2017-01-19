@@ -70,7 +70,6 @@ class Utils {
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
-
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 710,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
