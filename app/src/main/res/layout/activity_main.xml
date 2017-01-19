@@ -25,10 +25,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/interval"/>
+                android:text="@string/cycles"/>
 
             <NumberPicker
-                android:id="@+id/interval"
+                android:id="@+id/repeatCount"
                 style="@style/Picker"/>
 
         </LinearLayout>
@@ -40,10 +40,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cycles"/>
+                android:text="@string/interval"/>
 
             <NumberPicker
-                android:id="@+id/repeatCount"
+                android:id="@+id/interval"
                 style="@style/Picker"/>
 
         </LinearLayout>
