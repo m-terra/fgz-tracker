@@ -36,15 +36,13 @@ public class CheckerService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		runChecker();
 		if (pendingIntent == null) {
 			scheduleRepeating();
 			runChecker();
-		} else if (checkCount > UserPrefs.getRepeatCount(this)) {
+		} else if (checkCount >= UserPrefs.getRepeatCount(this)) {
 			cancelRepeating();
 		} else {
 			runChecker();
-			checkCount++;
 		}
 		return Service.START_NOT_STICKY;
 	}
@@ -82,8 +80,9 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
-				compareContent(newContent);
-				Utils.updateOngoingNotification(CheckerService.this);
+				checkCount++;
+				String result = compareContent(newContent);
+				Utils.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
 	}
@@ -113,19 +112,24 @@ public class CheckerService extends Service {
 		}
 	}
 
-	private void compareContent(String newContent) {
+	private String compareContent(String newContent) {
+		String result = newContent;
 		String prevContent = UserPrefs.getSiteContent(this);
 		String time = sdf.format(new Date());
 		if (StringUtils.startsWith(newContent, FAILURE)) {
 			UserPrefs.setTrackingResult(this, newContent);
-		} else if (StringUtils.isEmpty(prevContent)) {
-			UserPrefs.setSiteContentAndResult(this, newContent, "First Checked: " + time);
-		} else if (StringUtils.equals(prevContent, newContent)) {
-			UserPrefs.setSiteContentAndResult(this, newContent, "No Change: " + time);
 		} else {
-			UserPrefs.setSiteContentAndResult(this, newContent, "Change detected: " + time);
-			createChangeDetectedAlert(this);
+			if (StringUtils.isEmpty(prevContent)) {
+				result = "First Checked: " + time;
+			} else if (StringUtils.equals(prevContent, newContent)) {
+				result = "No Change: " + time;
+			} else {
+				result = "Change detected: " + time;
+				createChangeDetectedAlert(this);
+			}
+			UserPrefs.setSiteContentAndResult(this, newContent, result);
 		}
+		return result;
 	}
 
 }

@@ -11,7 +11,9 @@ import android.util.Log;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -21,6 +23,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class Utils {
 
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
 
 	static void scheduleDaily(Context context) {
@@ -41,9 +44,9 @@ class Utils {
 		am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
 				AlarmManager.INTERVAL_DAY, pi);
 
-		updateOngoingNotification(context);
+		updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
 
-		Log.d("CheckerService", "Checking schedules for " + alarmTime);
+		Log.d("CheckerService", "Scheduled daily check at " + sdf.format(alarmTime.getTime()));
 	}
 
 	static void cancelDaily(Context context) {
@@ -55,8 +58,7 @@ class Utils {
 		removeOngoingNotification(context);
 	}
 
-	static void updateOngoingNotification(Context context) {
-		String text = UserPrefs.getTrackingResult(context);
+	static void updateOngoingNotification(Context context, String text) {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		StringBuilder sb = new StringBuilder(text);
@@ -68,12 +70,20 @@ class Utils {
 		sb.append("\n- Traget url is ").append(UserPrefs.getTrackingUrl(context));
 		bigTextStyle.bigText(sb);
 
+		Intent intent = new Intent(context, MainActivity.class);
+
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 710,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 		Notification notification = new NotificationCompat.Builder(context)
 				.setSmallIcon(R.drawable.ic_house)
 				.setContentTitle(context.getString(R.string.app_name))
 				.setContentText(text)
 				.setStyle(bigTextStyle)
-				.setPriority(Notification.PRIORITY_MIN).build();
+				.setPriority(Notification.PRIORITY_MIN)
+				.setContentIntent(pendingIntent).build();
+
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -86,13 +96,11 @@ class Utils {
 	}
 
 	static void createAlertNotification(Context context, String text, Intent intent) {
-		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 715,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Notification notification = new NotificationCompat.Builder(context)
@@ -105,6 +113,8 @@ class Utils {
 				.setContentIntent(pendingIntent).build();
 
 		notification.defaults = Notification.DEFAULT_ALL;
+
+		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		mNotifyMgr.notify(98745, notification);
 	}
 
