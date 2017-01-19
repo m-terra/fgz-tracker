@@ -62,12 +62,11 @@ class Utils {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		StringBuilder sb = new StringBuilder(text);
-		sb.append("\n- Checks start daily at ");
+		sb.append("\nDaily ");
 		sb.append(UserPrefs.getHour(context)).append(":");
 		sb.append(UserPrefs.getMinute(context));
-		sb.append("\n- Checking interval is ").append(UserPrefs.getInterval(context)).append(" min");
-		sb.append("\n- Check is repeated ").append(UserPrefs.getRepeatCount(context)).append(" times");
-		sb.append("\n- Traget url is ").append(UserPrefs.getTrackingUrl(context));
+		sb.append(", interval ").append(UserPrefs.getInterval(context)).append("min");
+		sb.append(", repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
