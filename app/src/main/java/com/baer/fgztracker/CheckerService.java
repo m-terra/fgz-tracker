@@ -120,11 +120,11 @@ public class CheckerService extends Service {
 			UserPrefs.setTrackingResult(this, newContent);
 		} else {
 			if (StringUtils.isEmpty(prevContent)) {
-				result = "First checked at " + time;
+				result = "first checked at " + time;
 			} else if (StringUtils.equals(prevContent, newContent)) {
-				result = "No change at " + time;
+				result = "no change at " + time;
 			} else {
-				result = "Change detected at " + time;
+				result = "change detected at " + time;
 				createChangeDetectedAlert(this);
 			}
 			UserPrefs.setSiteContentAndResult(this, newContent, result);

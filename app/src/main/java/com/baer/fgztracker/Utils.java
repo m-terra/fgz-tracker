@@ -62,11 +62,11 @@ class Utils {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		StringBuilder sb = new StringBuilder(text);
-		sb.append("\nDaily ");
+		sb.append("\ndaily ");
 		sb.append(UserPrefs.getHour(context)).append(":");
 		sb.append(UserPrefs.getMinute(context));
-		sb.append(", interval ").append(UserPrefs.getInterval(context)).append("min");
-		sb.append(", repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
+		sb.append(" interval ").append(UserPrefs.getInterval(context)).append("min");
+		sb.append(" repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
