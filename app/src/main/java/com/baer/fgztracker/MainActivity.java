@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		enableSwitch.setOnCheckedChangeListener(this);
 
 		if (UserPrefs.getEnabled(this)) {
-			Utils.scheduleDaily(this);
+			Scheduler.scheduleDaily(this);
 			enableSwitch.setChecked(true);
 		}
 	}
@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		UserPrefs.setEnabled(this, isChecked);
 		if (isChecked) {
-			Utils.scheduleDaily(this);
+			Scheduler.scheduleDaily(this);
 		} else {
-			Utils.cancelDaily(this);
+			Scheduler.cancelDaily(this);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		UserPrefs.setHourMinuteIntervalRepeatCount(this, hour, min, interv, repCnt);
 
 		if (UserPrefs.getEnabled(this)) {
-			Utils.scheduleDaily(this, hour, min);
+			Scheduler.scheduleDaily(this, hour, min);
 		}
 	}
 

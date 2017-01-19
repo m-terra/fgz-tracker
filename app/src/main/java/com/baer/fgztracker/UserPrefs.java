@@ -32,7 +32,7 @@ class UserPrefs {
 	}
 
 	static String getTrackingResult(Context context) {
-		return getPreferences(context).getString("result", "no checks yet");
+		return getPreferences(context).getString("result", "no checks run yet");
 	}
 
 	static void setTrackingResult(Context context, String result) {

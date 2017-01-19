@@ -14,6 +14,8 @@ import android.util.Log;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -67,7 +69,7 @@ public class CheckerService extends Service {
 
 	private void createChangeDetectedAlert(Context context) {
 		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UserPrefs.getTrackingUrl(context)));
-		Utils.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
+		NotificationUtils.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
 
 	private void runChecker() {
@@ -82,7 +84,7 @@ public class CheckerService extends Service {
 				super.onPostExecute(newContent);
 				checkCount++;
 				String result = compareContent(newContent);
-				Utils.updateOngoingNotification(CheckerService.this, result);
+				NotificationUtils.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
 	}
@@ -104,7 +106,7 @@ public class CheckerService extends Service {
 			while ((inputLine = in.readLine()) != null) {
 				sb.append(inputLine);
 			}
-			Utils.closeQuietly(in);
+			closeQuietly(in);
 			conn.disconnect();
 			return sb.toString();
 		} catch (Exception e) {
@@ -130,6 +132,16 @@ public class CheckerService extends Service {
 			UserPrefs.setSiteContentAndResult(this, newContent, result);
 		}
 		return result;
+	}
+
+	static void closeQuietly(Closeable stream) {
+		try {
+			if (stream != null) {
+				stream.close();
+			}
+		} catch (IOException ioe) {
+			// ignore
+		}
 	}
 
 }
