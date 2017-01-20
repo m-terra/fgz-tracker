@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by TZHBAANM on 18.01.2017
  */
@@ -32,7 +34,14 @@ class UserPrefs {
 	}
 
 	static String getTrackingResult(Context context) {
-		return getPreferences(context).getString("result", "no checks run yet");
+		String result = getPreferences(context).getString("result", null);
+		if(result == null){
+			StringBuilder sb = new StringBuilder("first check will run at ");
+			sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getHour(context)), 2, "0")).append(":");
+			sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getMinute(context)), 2, "0"));
+			result = sb.toString();
+		}
+		return result;
 	}
 
 	static void setTrackingResult(Context context, String result) {
@@ -40,19 +49,19 @@ class UserPrefs {
 	}
 
 	static int getHour(Context context) {
-		return getPreferences(context).getInt("hour", 15);
+		return getPreferences(context).getInt("hour", 16);
 	}
 
 	static int getMinute(Context context) {
-		return getPreferences(context).getInt("minute", 55);
+		return getPreferences(context).getInt("minute", 0);
 	}
 
 	static int getInterval(Context context) {
-		return getPreferences(context).getInt("interval", 1);
+		return getPreferences(context).getInt("interval", 2);
 	}
 
 	static int getRepeatCount(Context context) {
-		return getPreferences(context).getInt("repeatCount", 30);
+		return getPreferences(context).getInt("repeatCount", 20);
 	}
 
 	static void setHourMinuteIntervalRepeatCount(Context context, int hour, int minute,
