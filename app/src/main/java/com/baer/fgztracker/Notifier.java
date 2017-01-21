@@ -23,7 +23,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  * Created by andy on 1/17/17
  */
 
-class NotificationUtils {
+class Notifier {
 
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
 

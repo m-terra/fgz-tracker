@@ -37,7 +37,7 @@ public class CheckerService extends Service {
 
 	private void createChangeDetectedAlert(Context context) {
 		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UserPrefs.getTrackingUrl(context)));
-		NotificationUtils.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
+		Notifier.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
 
 	private void runChecker() {
@@ -51,7 +51,7 @@ public class CheckerService extends Service {
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
 				String result = compareContent(newContent);
-				NotificationUtils.updateOngoingNotification(CheckerService.this, result);
+				Notifier.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
 	}

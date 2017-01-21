@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 		if (UserPrefs.getEnabled(this)) {
 			Scheduler.rescheduleDaily(this);
-			NotificationUtils.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
 			enableSwitch.setChecked(true);
 		}
 	}
@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		UserPrefs.setEnabled(this, isChecked);
 		if (isChecked) {
 			Scheduler.rescheduleDaily(this);
-			NotificationUtils.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
 		} else {
 			Scheduler.cancelDaily(this);
-			NotificationUtils.removeOngoingNotification(this);
+			Notifier.removeOngoingNotification(this);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 		if (UserPrefs.getEnabled(this)) {
 			Scheduler.rescheduleDaily(this, hour, min, repreatCount, interval);
-			NotificationUtils.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
 		}
 	}
 
