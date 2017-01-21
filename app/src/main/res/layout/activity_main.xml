@@ -2,16 +2,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.baer.fgztracker.MainActivity">
 
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/enableSwitch"
-        style="@style/InputStyle"
-        android:text="@string/enable_tracker"/>
+    <include layout="@layout/appbar"/>
 
     <LinearLayout
         style="@style/InputStyle"
@@ -66,6 +62,10 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        style="@style/InputBox"
+        android:text="@string/start_time"/>
 
     <TimePicker
         android:id="@+id/startTime"

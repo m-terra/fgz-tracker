@@ -8,5 +8,7 @@
     <dimen name="picker_height">80dp</dimen>
     <dimen name="picker_width">80dp</dimen>
 
+    <dimen name="appbar_title">20sp</dimen>
+
 
 </resources>

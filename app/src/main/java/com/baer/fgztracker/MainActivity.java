@@ -3,6 +3,7 @@ package com.baer.fgztracker;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Toolbar appbar = (Toolbar) findViewById(R.id.appbar);
+		setSupportActionBar(appbar);
 
 		TextView urlView = (TextView) findViewById(R.id.url);
 		urlView.setText(UserPrefs.getTrackingUrl(this));
