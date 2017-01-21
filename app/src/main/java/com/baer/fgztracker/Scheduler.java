@@ -18,15 +18,16 @@ import java.util.Locale;
 class Scheduler {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-	static final String RESCHEDULE_FLAG = "reschdule";
+	static final String RESCHEDULE_FLAG = "RESCHEDULE_FLAG";
+	private final UserPrefs userPrefs = new UserPrefs();
 
-	static void rescheduleDaily(Context context) {
-		rescheduleDaily(context, UserPrefs.getHour(context), UserPrefs.getMinute(context),
-				UserPrefs.getRepeatCount(context), UserPrefs.getInterval(context));
+	void rescheduleDaily(Context context) {
+		rescheduleDaily(context, userPrefs.getHour(context), userPrefs.getMinute(context),
+				userPrefs.getRepeatCount(context), userPrefs.getInterval(context));
 	}
 
-	static void rescheduleDaily(Context context, int hour, int minute, int repreatCount, int interval) {
-		Scheduler.cancelDaily(context);
+	void rescheduleDaily(Context context, int hour, int minute, int repreatCount, int interval) {
+		cancelDaily(context);
 
 		Calendar alarmTime = Calendar.getInstance();
 		alarmTime.set(Calendar.HOUR_OF_DAY, hour);
@@ -50,12 +51,12 @@ class Scheduler {
 			am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis() + i * interval * 60000, pi);
 		}
 
-		UserPrefs.setAlarmIds(context, alarmIds);
+		userPrefs.setAlarmIds(context, alarmIds);
 		Log.d("Scheduler", "Scheduled daily check at " + sdf.format(alarmTime.getTime()));
 	}
 
-	static void cancelDaily(Context context) {
-		for (Integer id : UserPrefs.getAlarmIds(context)) {
+	void cancelDaily(Context context) {
+		for (Integer id : userPrefs.getAlarmIds(context)) {
 			PendingIntent pi = PendingIntent.getService(context, id,
 					new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
 			AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

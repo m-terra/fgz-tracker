@@ -1,21 +1,13 @@
 package com.baer.fgztracker;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -25,16 +17,17 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 class Notifier {
 
 	private static final int ONGOING_NOTIFICATION_ID = 257896;
+	private final UserPrefs userPrefs = new UserPrefs();
 
-	static void updateOngoingNotification(Context context, String text) {
+	void updateOngoingNotification(Context context, String text) {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		StringBuilder sb = new StringBuilder(text);
 		sb.append("\ndaily ");
-		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getHour(context)), 2, "0")).append(":");
-		sb.append(StringUtils.leftPad(Integer.toString(UserPrefs.getMinute(context)), 2, "0"));
-		sb.append(" > repeat ").append(UserPrefs.getRepeatCount(context)).append("x");
-		sb.append(" > interval ").append(UserPrefs.getInterval(context)).append("min");
+		sb.append(StringUtils.leftPad(Integer.toString(userPrefs.getHour(context)), 2, "0")).append(":");
+		sb.append(StringUtils.leftPad(Integer.toString(userPrefs.getMinute(context)), 2, "0"));
+		sb.append(" > repeat ").append(userPrefs.getRepeatCount(context)).append("x");
+		sb.append(" > interval ").append(userPrefs.getInterval(context)).append("min");
 		bigTextStyle.bigText(sb);
 
 		Intent intent = new Intent(context, MainActivity.class);
@@ -56,12 +49,12 @@ class Notifier {
 		notificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
 	}
 
-	static void removeOngoingNotification(Context context) {
+	void removeOngoingNotification(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.cancel(ONGOING_NOTIFICATION_ID);
 	}
 
-	static void createAlertNotification(Context context, String text, Intent intent) {
+	void createAlertNotification(Context context, String text, Intent intent) {
 		NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 		bigTextStyle.setBigContentTitle(context.getString(R.string.app_name));
 		bigTextStyle.bigText(text);
@@ -83,7 +76,6 @@ class Notifier {
 		NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 		mNotifyMgr.notify(98745, notification);
 	}
-
 
 
 }

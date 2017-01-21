@@ -26,6 +26,9 @@ public class CheckerService extends Service {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm", Locale.getDefault());
 	private static final String FAILURE = "FAILURE ";
+	private final Scheduler scheduler = new Scheduler();
+	private final Notifier notifier = new Notifier();
+	private final UserPrefs userPrefs = new UserPrefs();
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -35,15 +38,15 @@ public class CheckerService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		runChecker();
-		if(intent.hasExtra(Scheduler.RESCHEDULE_FLAG)){
-			Scheduler.rescheduleDaily(this);
+		if (intent.hasExtra(Scheduler.RESCHEDULE_FLAG)) {
+			scheduler.rescheduleDaily(this);
 		}
 		return Service.START_NOT_STICKY;
 	}
 
 	private void createChangeDetectedAlert(Context context) {
-		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UserPrefs.getTrackingUrl(context)));
-		Notifier.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
+		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(userPrefs.getTrackingUrl(context)));
+		notifier.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
 
 	private void runChecker() {
@@ -57,7 +60,7 @@ public class CheckerService extends Service {
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
 				String result = compareContent(newContent);
-				Notifier.updateOngoingNotification(CheckerService.this, result);
+				notifier.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
 	}
@@ -65,7 +68,7 @@ public class CheckerService extends Service {
 	private String fetchPage() {
 		BufferedReader inputReader = null;
 		try {
-			String url = UserPrefs.getTrackingUrl(this);
+			String url = userPrefs.getTrackingUrl(this);
 			Log.d("CheckerService", "Fetching content from url: " + url);
 			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 			conn.setDoOutput(false);
@@ -97,10 +100,10 @@ public class CheckerService extends Service {
 
 	private String compareContent(String newContent) {
 		String result = newContent;
-		String prevContent = UserPrefs.getSiteContent(this);
+		String prevContent = userPrefs.getSiteContent(this);
 		String time = sdf.format(new Date());
 		if (StringUtils.startsWith(newContent, FAILURE)) {
-			UserPrefs.setTrackingResult(this, newContent);
+			userPrefs.setTrackingResult(this, newContent);
 		} else {
 			if (StringUtils.isEmpty(prevContent)) {
 				result = "first checked at " + time;
@@ -110,7 +113,7 @@ public class CheckerService extends Service {
 				result = "change found at " + time;
 				createChangeDetectedAlert(this);
 			}
-			UserPrefs.setSiteContentAndResult(this, newContent, result);
+			userPrefs.setSiteContentAndResult(this, newContent, result);
 		}
 		return result;
 	}

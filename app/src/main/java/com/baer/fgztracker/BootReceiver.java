@@ -9,11 +9,15 @@ import android.content.Intent;
  */
 public class BootReceiver extends BroadcastReceiver {
 
+	private final Scheduler scheduler = new Scheduler();
+	private final Notifier notifier = new Notifier();
+	private final UserPrefs userPrefs = new UserPrefs();
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (UserPrefs.getEnabled(context)) {
-			Scheduler.rescheduleDaily(context);
-			Notifier.updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
+		if (userPrefs.getEnabled(context)) {
+			scheduler.rescheduleDaily(context);
+			notifier.updateOngoingNotification(context, userPrefs.getTrackingResult(context));
 		}
 	}
 

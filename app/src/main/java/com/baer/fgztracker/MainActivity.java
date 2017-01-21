@@ -15,6 +15,9 @@ import android.widget.TimePicker;
  */
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
+	private final Scheduler scheduler = new Scheduler();
+	private final Notifier notifier = new Notifier();
+	private final UserPrefs userPrefs = new UserPrefs();
 	private NumberPicker intervalPicker;
 	private NumberPicker repeatCountPicker;
 	private TimePicker startTimePicker;
@@ -27,44 +30,44 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		setSupportActionBar(appbar);
 
 		TextView urlView = (TextView) findViewById(R.id.url);
-		urlView.setText(UserPrefs.getTrackingUrl(this));
+		urlView.setText(userPrefs.getTrackingUrl(this));
 
 		intervalPicker = (NumberPicker) findViewById(R.id.interval);
 		intervalPicker.setMinValue(1);
 		intervalPicker.setMaxValue(20);
-		intervalPicker.setValue(UserPrefs.getInterval(this));
+		intervalPicker.setValue(userPrefs.getInterval(this));
 
 		repeatCountPicker = (NumberPicker) findViewById(R.id.repeatCount);
 		repeatCountPicker.setMinValue(1);
 		repeatCountPicker.setMaxValue(200);
-		repeatCountPicker.setValue(UserPrefs.getRepeatCount(this));
+		repeatCountPicker.setValue(userPrefs.getRepeatCount(this));
 
 		startTimePicker = (TimePicker) findViewById(R.id.startTime);
 		startTimePicker.setIs24HourView(true);
-		startTimePicker.setHour(UserPrefs.getHour(this));
-		startTimePicker.setMinute(UserPrefs.getMinute(this));
+		startTimePicker.setHour(userPrefs.getHour(this));
+		startTimePicker.setMinute(userPrefs.getMinute(this));
 
 		findViewById(R.id.save).setOnClickListener(this);
 
 		SwitchCompat enableSwitch = (SwitchCompat) findViewById(R.id.enableSwitch);
 		enableSwitch.setOnCheckedChangeListener(this);
 
-		if (UserPrefs.getEnabled(this)) {
-			Scheduler.rescheduleDaily(this);
-			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+		if (userPrefs.getEnabled(this)) {
+			scheduler.rescheduleDaily(this);
+			notifier.updateOngoingNotification(this, userPrefs.getTrackingResult(this));
 			enableSwitch.setChecked(true);
 		}
 	}
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		UserPrefs.setEnabled(this, isChecked);
+		userPrefs.setEnabled(this, isChecked);
 		if (isChecked) {
-			Scheduler.rescheduleDaily(this);
-			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+			scheduler.rescheduleDaily(this);
+			notifier.updateOngoingNotification(this, userPrefs.getTrackingResult(this));
 		} else {
-			Scheduler.cancelDaily(this);
-			Notifier.removeOngoingNotification(this);
+			scheduler.cancelDaily(this);
+			notifier.removeOngoingNotification(this);
 		}
 	}
 
@@ -74,11 +77,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		int min = startTimePicker.getMinute();
 		int repreatCount = repeatCountPicker.getValue();
 		int interval = intervalPicker.getValue();
-		UserPrefs.setHourMinuteRepeatCountInterval(this, hour, min, repreatCount, interval);
+		userPrefs.setHourMinuteRepeatCountInterval(this, hour, min, repreatCount, interval);
 
-		if (UserPrefs.getEnabled(this)) {
-			Scheduler.rescheduleDaily(this, hour, min, repreatCount, interval);
-			Notifier.updateOngoingNotification(this, UserPrefs.getTrackingResult(this));
+		if (userPrefs.getEnabled(this)) {
+			scheduler.rescheduleDaily(this, hour, min, repreatCount, interval);
+			notifier.updateOngoingNotification(this, userPrefs.getTrackingResult(this));
 		}
 	}
 
