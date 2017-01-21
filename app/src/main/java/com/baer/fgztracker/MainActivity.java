@@ -10,7 +10,9 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-
+/**
+ * Created by andy on 1/19/17
+ */
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
 	private NumberPicker intervalPicker;

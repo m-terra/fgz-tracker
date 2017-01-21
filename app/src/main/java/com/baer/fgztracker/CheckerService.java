@@ -19,9 +19,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Created by andy on 1/19/17
+ */
 public class CheckerService extends Service {
 
-	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm:ss", Locale.getDefault());
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm", Locale.getDefault());
 	private static final String FAILURE = "FAILURE ";
 
 	@Override
@@ -32,6 +35,9 @@ public class CheckerService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		runChecker();
+		if(intent.hasExtra(Scheduler.RESCHEDULE_FLAG)){
+			Scheduler.rescheduleDaily(this);
+		}
 		return Service.START_NOT_STICKY;
 	}
 

@@ -15,10 +15,10 @@ import java.util.Locale;
 /**
  * Created by andy on 1/19/17
  */
-
 class Scheduler {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+	static final String RESCHEDULE_FLAG = "reschdule";
 
 	static void rescheduleDaily(Context context) {
 		rescheduleDaily(context, UserPrefs.getHour(context), UserPrefs.getMinute(context),
@@ -38,14 +38,16 @@ class Scheduler {
 
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		List<Integer> alarmIds = new ArrayList<>(repreatCount);
+		Intent intent = new Intent(context, CheckerService.class);
 
 		for (int i = 0; i < repreatCount; i++) {
 			int requestCode = 5000 + i;
 			alarmIds.add(requestCode);
-			PendingIntent pi = PendingIntent.getService(context, requestCode,
-					new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
-			am.setRepeating(AlarmManager.RTC_WAKEUP,
-					alarmTime.getTimeInMillis() + i * interval * 60000, AlarmManager.INTERVAL_DAY, pi);
+			if (i == repreatCount - 1) {
+				intent.putExtra(RESCHEDULE_FLAG, true);
+			}
+			PendingIntent pi = PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis() + i * interval * 60000, pi);
 		}
 
 		UserPrefs.setAlarmIds(context, alarmIds);
@@ -53,7 +55,7 @@ class Scheduler {
 	}
 
 	static void cancelDaily(Context context) {
-		for(Integer id : UserPrefs.getAlarmIds(context)) {
+		for (Integer id : UserPrefs.getAlarmIds(context)) {
 			PendingIntent pi = PendingIntent.getService(context, id,
 					new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
 			AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

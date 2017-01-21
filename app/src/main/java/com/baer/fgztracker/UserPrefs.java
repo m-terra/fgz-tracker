@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by TZHBAANM on 18.01.2017
+ * Created by andy on 1/19/17
  */
-
 class UserPrefs {
 
 	static boolean getEnabled(Context context) {
