@@ -1,20 +1,16 @@
 package com.baer.fgztracker;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -27,9 +23,6 @@ public class CheckerService extends Service {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm:ss", Locale.getDefault());
 	private static final String FAILURE = "FAILURE ";
-	private PendingIntent pendingIntent;
-	private int checkCount;
-
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -38,33 +31,8 @@ public class CheckerService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if (pendingIntent == null) {
-			scheduleRepeating();
-			runChecker();
-		} else if (checkCount >= UserPrefs.getRepeatCount(this)) {
-			cancelRepeating();
-		} else {
-			runChecker();
-		}
+		runChecker();
 		return Service.START_NOT_STICKY;
-	}
-
-	private void scheduleRepeating() {
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent serviceIntent = new Intent(this, CheckerService.class);
-		pendingIntent = PendingIntent.getService(this,
-				44, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		int interval = UserPrefs.getInterval(this) * 60 * 1000;
-		alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-				SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
-	}
-
-	private void cancelRepeating() {
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarmManager.cancel(pendingIntent);
-		checkCount = 0;
-		pendingIntent = null;
 	}
 
 	private void createChangeDetectedAlert(Context context) {
@@ -82,7 +50,6 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
-				checkCount++;
 				String result = compareContent(newContent);
 				NotificationUtils.updateOngoingNotification(CheckerService.this, result);
 			}
@@ -90,6 +57,7 @@ public class CheckerService extends Service {
 	}
 
 	private String fetchPage() {
+		BufferedReader inputReader = null;
 		try {
 			String url = UserPrefs.getTrackingUrl(this);
 			Log.d("CheckerService", "Fetching content from url: " + url);
@@ -101,16 +69,23 @@ public class CheckerService extends Service {
 			conn.connect();
 
 			StringBuilder sb = new StringBuilder();
-			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			inputReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
+			while ((inputLine = inputReader.readLine()) != null) {
 				sb.append(inputLine);
 			}
-			closeQuietly(in);
 			conn.disconnect();
 			return sb.toString();
 		} catch (Exception e) {
 			return FAILURE + sdf.format(new Date()) + ": " + e.getMessage();
+		} finally {
+			try {
+				if (inputReader != null) {
+					inputReader.close();
+				}
+			} catch (IOException ioe) {
+				// ignore
+			}
 		}
 	}
 
@@ -132,16 +107,6 @@ public class CheckerService extends Service {
 			UserPrefs.setSiteContentAndResult(this, newContent, result);
 		}
 		return result;
-	}
-
-	static void closeQuietly(Closeable stream) {
-		try {
-			if (stream != null) {
-				stream.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
 	}
 
 }

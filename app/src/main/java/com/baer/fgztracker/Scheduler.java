@@ -32,13 +32,16 @@ class Scheduler {
 		}
 		PendingIntent pi = PendingIntent.getService(context, 22,
 				new Intent(context, CheckerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
+		int interval = UserPrefs.getInterval(context) * 60000;
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
-				AlarmManager.INTERVAL_DAY, pi);
+
+		for (int i = 0; i < UserPrefs.getRepeatCount(context); i++) {
+			am.setRepeating(AlarmManager.RTC_WAKEUP,
+					alarmTime.getTimeInMillis() + i * interval, AlarmManager.INTERVAL_DAY, pi);
+		}
 
 		NotificationUtils.updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
-
-		Log.d("CheckerService", "Scheduled daily check at " + sdf.format(alarmTime.getTime()));
+		Log.d("Scheduler", "Scheduled daily check at " + sdf.format(alarmTime.getTime()));
 	}
 
 	static void cancelDaily(Context context) {
