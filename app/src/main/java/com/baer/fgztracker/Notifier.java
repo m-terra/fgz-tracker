@@ -26,7 +26,7 @@ class Notifier {
 		sb.append("\ndaily ");
 		sb.append(StringUtils.leftPad(Integer.toString(userPrefs.getHour(context)), 2, "0")).append(":");
 		sb.append(StringUtils.leftPad(Integer.toString(userPrefs.getMinute(context)), 2, "0"));
-		sb.append(" > repeat ").append(userPrefs.getRepeatCount(context)).append("x");
+		sb.append(" > runs ").append(userPrefs.getRepeatCount(context)).append("x");
 		sb.append(" > interval ").append(userPrefs.getInterval(context)).append("min");
 		bigTextStyle.bigText(sb);
 
