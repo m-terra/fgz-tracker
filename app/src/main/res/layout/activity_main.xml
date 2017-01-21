@@ -46,7 +46,7 @@
 
         <LinearLayout
             style="@style/InputBox"
-            android:layout_width="match_parent"
+            android:padding="@dimen/margin_min"
             android:orientation="vertical">
 
             <TextView
@@ -54,9 +54,9 @@
                 style="@style/InputStyle"/>
 
             <Button
+                android:layout_marginTop="@dimen/margin_normal"
                 android:id="@+id/save"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                style="@style/InputStyle"
                 android:text="@string/save"/>
 
         </LinearLayout>
@@ -64,12 +64,13 @@
     </LinearLayout>
 
     <TextView
-        style="@style/InputBox"
+        style="@style/InputStyle"
         android:text="@string/start_time"/>
 
     <TimePicker
         android:id="@+id/startTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
 
 </LinearLayout>

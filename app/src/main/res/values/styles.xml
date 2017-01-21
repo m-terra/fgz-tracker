@@ -7,6 +7,8 @@
     </style>
 
     <style name="InputStyle">
+        <item name="android:layout_marginTop">@dimen/margin_min</item>
+        <item name="android:layout_marginBottom">@dimen/margin_min</item>
         <item name="android:layout_marginStart">@dimen/margin_normal</item>
         <item name="android:layout_marginEnd">@dimen/margin_normal</item>
         <item name="android:layout_marginRight">@dimen/margin_normal</item>
@@ -26,7 +28,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-   <style name="Picker">
+    <style name="Picker">
         <item name="android:layout_width">@dimen/picker_width</item>
         <item name="android:layout_height">@dimen/picker_height</item>
     </style>

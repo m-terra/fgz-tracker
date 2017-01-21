@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
+            android:textColor="?attr/colorPrimaryDark"
             android:textSize="@dimen/appbar_title"/>
 
         <android.support.v7.widget.SwitchCompat
