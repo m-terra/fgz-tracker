@@ -12,7 +12,8 @@ public class BootReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (UserPrefs.getEnabled(context)) {
-			Scheduler.scheduleDaily(context);
+			Scheduler.rescheduleDaily(context);
+			NotificationUtils.updateOngoingNotification(context, UserPrefs.getTrackingResult(context));
 		}
 	}
 
