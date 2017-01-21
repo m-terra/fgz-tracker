@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		int repCnt = repeatCountPicker.getValue();
 		UserPrefs.setHourMinuteIntervalRepeatCount(this, hour, min, interv, repCnt);
 
+		Scheduler.cancelDaily(this);
 		if (UserPrefs.getEnabled(this)) {
 			Scheduler.scheduleDaily(this, hour, min);
 		}
 	}
-
 
 }
