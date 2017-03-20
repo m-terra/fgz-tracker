@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FgzTracker.iml" filepath="$PROJECT_DIR$/FgzTracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fgz-tracker.iml" filepath="$PROJECT_DIR$/fgz-tracker.iml" />
     </modules>
   </component>
 </project>
