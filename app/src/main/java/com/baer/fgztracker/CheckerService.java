@@ -60,7 +60,7 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
-				String result = compareContent(newContent);
+				String result = compareContentAndAlert(newContent);
 				notifier.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
@@ -99,7 +99,7 @@ public class CheckerService extends Service {
 		}
 	}
 
-	private String compareContent(String newContent) {
+	private String compareContentAndAlert(String newContent) {
 		String result = newContent;
 		String prevContent = userPrefs.getSiteContent(this);
 		String time = sdf.format(new Date());
