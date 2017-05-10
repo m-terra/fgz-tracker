@@ -53,11 +53,11 @@ class UserPrefs {
 	}
 
 	int getHour(Context context) {
-		return getPreferences(context).getInt("hour", 16);
+		return getPreferences(context).getInt("hour", 15);
 	}
 
 	int getMinute(Context context) {
-		return getPreferences(context).getInt("minute", 0);
+		return getPreferences(context).getInt("minute", 55);
 	}
 
 	int getInterval(Context context) {

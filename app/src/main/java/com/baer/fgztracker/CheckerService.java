@@ -26,6 +26,7 @@ public class CheckerService extends Service {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm", Locale.getDefault());
 	private static final String FAILURE = "FAILURE ";
+	private static final CharSequence[] KEYWORDS = {"haus", "Haus", "EFH", "familien", "Familien"};
 	private final Scheduler scheduler = new Scheduler();
 	private final Notifier notifier = new Notifier();
 	private final UserPrefs userPrefs = new UserPrefs();
@@ -105,13 +106,11 @@ public class CheckerService extends Service {
 		if (StringUtils.startsWith(newContent, FAILURE)) {
 			userPrefs.setTrackingResult(this, newContent);
 		} else {
-			if (StringUtils.isEmpty(prevContent)) {
-				result = "first checked at " + time;
-			} else if (StringUtils.equals(prevContent, newContent)) {
-				result = "no change at " + time;
-			} else {
-				result = "change found at " + time;
+			if (!StringUtils.equals(prevContent, newContent) && StringUtils.containsAny(newContent, KEYWORDS)) {
+				result = "house found at " + time;
 				createChangeDetectedAlert(this);
+			} else {
+				result = "no new house found " + time;
 			}
 			userPrefs.setSiteContentAndResult(this, newContent, result);
 		}
