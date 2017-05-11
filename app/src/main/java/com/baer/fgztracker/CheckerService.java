@@ -26,10 +26,10 @@ public class CheckerService extends Service {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM - HH:mm", Locale.getDefault());
 	private static final String FAILURE = "FAILURE ";
-	private static final CharSequence[] KEYWORDS = {"haus", "Haus", "EFH", "familien", "Familien"};
 	private final Scheduler scheduler = new Scheduler();
 	private final Notifier notifier = new Notifier();
 	private final UserPrefs userPrefs = new UserPrefs();
+	private final ContentAnalyzer contentAnalyzer = new ContentAnalyzer();
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -45,7 +45,7 @@ public class CheckerService extends Service {
 		return Service.START_NOT_STICKY;
 	}
 
-	private void createChangeDetectedAlert(Context context) {
+	private void alertForHouse(Context context) {
 		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(userPrefs.getTrackingUrl(context)));
 		notifier.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
 	}
@@ -60,7 +60,22 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
-				String result = compareContentAndAlert(newContent);
+				String result;
+				if (StringUtils.startsWith(newContent, FAILURE)) {
+					result = newContent;
+					userPrefs.setTrackingResult(CheckerService.this, newContent);
+				} else {
+					String prevContent = userPrefs.getSiteContent(CheckerService.this);
+					boolean hasHouse = contentAnalyzer.hasNewHouse(prevContent, newContent);
+					String time = sdf.format(new Date());
+					if (hasHouse) {
+						result = "house found at " + time;
+						alertForHouse(CheckerService.this);
+					} else {
+						result = "no new house found " + time;
+					}
+					userPrefs.setSiteContentAndResult(CheckerService.this, newContent, result);
+				}
 				notifier.updateOngoingNotification(CheckerService.this, result);
 			}
 		}.execute();
@@ -97,24 +112,6 @@ public class CheckerService extends Service {
 				// ignore
 			}
 		}
-	}
-
-	private String compareContentAndAlert(String newContent) {
-		String result = newContent;
-		String prevContent = userPrefs.getSiteContent(this);
-		String time = sdf.format(new Date());
-		if (StringUtils.startsWith(newContent, FAILURE)) {
-			userPrefs.setTrackingResult(this, newContent);
-		} else {
-			if (!StringUtils.equals(prevContent, newContent) && StringUtils.containsAny(newContent, KEYWORDS)) {
-				result = "house found at " + time;
-				createChangeDetectedAlert(this);
-			} else {
-				result = "no new house found " + time;
-			}
-			userPrefs.setSiteContentAndResult(this, newContent, result);
-		}
-		return result;
 	}
 
 }
