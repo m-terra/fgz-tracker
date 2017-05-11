@@ -12,6 +12,11 @@ public class ContentAnalyzerTest {
 	private ContentAnalyzer sut = new ContentAnalyzer();
 
 	@Test
+	public void firstRun() {
+		Assert.assertFalse(sut.hasNewHouse(null, "barfoo"));
+	}
+
+	@Test
 	public void newHouse() {
 		Assert.assertTrue(sut.hasNewHouse("foo", "barEFHfoo"));
 	}

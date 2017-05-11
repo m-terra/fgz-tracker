@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ContentAnalyzer {
 
-	private static final CharSequence[] KEYWORDS = {"haus", "Haus", "EFH", "familie", "Familie"};
+	private static final CharSequence[] KEYWORDS = {"EFH", "amilienhaus"};
 
 	boolean hasNewHouse(String prevContent, String newContent) {
 		return !StringUtils.equals(prevContent, newContent)

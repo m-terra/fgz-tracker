@@ -45,11 +45,6 @@ public class CheckerService extends Service {
 		return Service.START_NOT_STICKY;
 	}
 
-	private void alertForHouse(Context context) {
-		Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(userPrefs.getTrackingUrl(context)));
-		notifier.createAlertNotification(context, "FGZ has changed, click to view", resultIntent);
-	}
-
 	private void runChecker() {
 		new AsyncTask<Void, Void, String>() {
 			@Override
@@ -60,23 +55,25 @@ public class CheckerService extends Service {
 			@Override
 			protected void onPostExecute(String newContent) {
 				super.onPostExecute(newContent);
+				Context context = CheckerService.this;
+				String prevContent = userPrefs.getSiteContent(context);
+				String time = sdf.format(new Date());
 				String result;
 				if (StringUtils.startsWith(newContent, FAILURE)) {
 					result = newContent;
-					userPrefs.setTrackingResult(CheckerService.this, newContent);
+					userPrefs.setTrackingResult(context, newContent);
 				} else {
-					String prevContent = userPrefs.getSiteContent(CheckerService.this);
 					boolean hasHouse = contentAnalyzer.hasNewHouse(prevContent, newContent);
-					String time = sdf.format(new Date());
 					if (hasHouse) {
 						result = "house found at " + time;
-						alertForHouse(CheckerService.this);
+						Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(userPrefs.getTrackingUrl(context)));
+						notifier.createAlertNotification(context, "house found, click to view", resultIntent);
 					} else {
-						result = "no new house found " + time;
+						result = "no house found " + time;
 					}
-					userPrefs.setSiteContentAndResult(CheckerService.this, newContent, result);
+					userPrefs.setSiteContentAndResult(context, newContent, result);
 				}
-				notifier.updateOngoingNotification(CheckerService.this, result);
+				notifier.updateOngoingNotification(context, result);
 			}
 		}.execute();
 	}
