@@ -10,6 +10,7 @@ import org.junit.Test;
 public class ContentAnalyzerTest {
 
 	private ContentAnalyzer sut = new ContentAnalyzer();
+	private String _KEYWORKD_ = ContentAnalyzer.KEYWORDS[0].toString();
 
 	@Test
 	public void firstRun() {
@@ -18,22 +19,22 @@ public class ContentAnalyzerTest {
 
 	@Test
 	public void newHouse() {
-		Assert.assertTrue(sut.hasNewHouse("foo", "barEFHfoo"));
+		Assert.assertTrue(sut.hasNewHouse("foo", "bar" + _KEYWORKD_ + "foo"));
 	}
 
 	@Test
 	public void sameHouse() {
-		Assert.assertFalse(sut.hasNewHouse("fooHausBar", "fooHausBar"));
+		Assert.assertFalse(sut.hasNewHouse("foo" + _KEYWORKD_ + "Bar", "foo" + _KEYWORKD_ + "Bar"));
 	}
 
 	@Test
 	public void differentHouse() {
-		Assert.assertTrue(sut.hasNewHouse("fooHausBar", "barHausFoo"));
+		Assert.assertTrue(sut.hasNewHouse("foo" + _KEYWORKD_ + "Bar", "bar" + _KEYWORKD_ + "Foo"));
 	}
 
 	@Test
 	public void houseGone() {
-		Assert.assertFalse(sut.hasNewHouse("fooHausBar", "foobar"));
+		Assert.assertFalse(sut.hasNewHouse("foo" + _KEYWORKD_ + "Bar", "foobar"));
 	}
 
 	@Test

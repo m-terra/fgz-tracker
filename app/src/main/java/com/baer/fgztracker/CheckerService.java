@@ -30,6 +30,7 @@ public class CheckerService extends Service {
 	private final Notifier notifier = new Notifier();
 	private final UserPrefs userPrefs = new UserPrefs();
 	private final ContentAnalyzer contentAnalyzer = new ContentAnalyzer();
+	private final ContentPreparer contentPreparer = new ContentPreparer();
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -49,8 +50,7 @@ public class CheckerService extends Service {
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
-				String page = fetchPage();
-				return StringUtils.substringBetween(page, "Freie Objekte", "<script");
+				return fetchPage();
 			}
 
 			@Override
@@ -64,6 +64,7 @@ public class CheckerService extends Service {
 					result = newContent;
 					userPrefs.setTrackingResult(context, newContent);
 				} else {
+					newContent = contentPreparer.prepare(newContent);
 					boolean hasHouse = contentAnalyzer.hasNewHouse(prevContent, newContent);
 					if (hasHouse) {
 						result = "house found at " + time;
