@@ -49,7 +49,8 @@ public class CheckerService extends Service {
 		new AsyncTask<Void, Void, String>() {
 			@Override
 			protected String doInBackground(Void... params) {
-				return fetchPage();
+				String page = fetchPage();
+				return StringUtils.substringBetween(page, "Freie Objekte", "<script");
 			}
 
 			@Override
