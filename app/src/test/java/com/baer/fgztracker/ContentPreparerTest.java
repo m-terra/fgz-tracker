@@ -1,8 +1,8 @@
 package com.baer.fgztracker;
 
-import junit.framework.Assert;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class ContentPreparerTest {
 				Paths.get("app/src/test/resources/test1.html")), StandardCharsets.UTF_8);
 		String html2 = new String(Files.readAllBytes(
 				Paths.get("app/src/test/resources/test2.html")), StandardCharsets.UTF_8);
-		Assert.assertFalse(html1.equals(html2));
+		Assert.assertNotEquals(html1, html2);
 		Assert.assertEquals(sut.prepare(html1), sut.prepare(html2));
 	}
 

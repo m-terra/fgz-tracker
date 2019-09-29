@@ -1,19 +1,19 @@
 package com.baer.fgztracker;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toolbar;
 
 /**
  * Created by andy on 1/19/17
  */
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class MainActivity extends Activity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
 	private final Scheduler scheduler = new Scheduler();
 	private final Notifier notifier = new Notifier();
@@ -26,30 +26,33 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar appbar = (Toolbar) findViewById(R.id.appbar);
-		setSupportActionBar(appbar);
+		Toolbar appbar = findViewById(R.id.appbar);
+		setActionBar(appbar);
 
-		TextView urlView = (TextView) findViewById(R.id.url);
+		TextView urlView = findViewById(R.id.url);
 		urlView.setText(userPrefs.getTrackingUrl(this));
 
-		intervalPicker = (NumberPicker) findViewById(R.id.interval);
+		TextView lastrun = findViewById(R.id.lastrun);
+		lastrun.setText(userPrefs.getLastRun(this));
+
+		intervalPicker = findViewById(R.id.interval);
 		intervalPicker.setMinValue(1);
 		intervalPicker.setMaxValue(20);
 		intervalPicker.setValue(userPrefs.getInterval(this));
 
-		repeatCountPicker = (NumberPicker) findViewById(R.id.repeatCount);
+		repeatCountPicker = findViewById(R.id.repeatCount);
 		repeatCountPicker.setMinValue(1);
 		repeatCountPicker.setMaxValue(200);
 		repeatCountPicker.setValue(userPrefs.getRepeatCount(this));
 
-		startTimePicker = (TimePicker) findViewById(R.id.startTime);
+		startTimePicker = findViewById(R.id.startTime);
 		startTimePicker.setIs24HourView(true);
 		startTimePicker.setHour(userPrefs.getHour(this));
 		startTimePicker.setMinute(userPrefs.getMinute(this));
 
 		findViewById(R.id.save).setOnClickListener(this);
 
-		SwitchCompat enableSwitch = (SwitchCompat) findViewById(R.id.enableSwitch);
+		Switch enableSwitch = findViewById(R.id.enableSwitch);
 		enableSwitch.setOnCheckedChangeListener(this);
 
 		if (userPrefs.getEnabled(this)) {

@@ -53,6 +53,10 @@
                 android:id="@+id/url"
                 style="@style/InputStyle"/>
 
+            <TextView
+                android:id="@+id/lastrun"
+                style="@style/InputStyle" />
+
             <Button
                 android:layout_marginTop="@dimen/margin_normal"
                 android:id="@+id/save"

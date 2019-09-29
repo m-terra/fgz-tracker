@@ -64,6 +64,14 @@ class UserPrefs {
 		return getPreferences(context).getInt("interval", 2);
 	}
 
+	void setLastRun(Context context, String time) {
+		getPreferences(context).edit().putString("lastrun", time).apply();
+	}
+
+	String getLastRun(Context context) {
+		return getPreferences(context).getString("lastrun", "no run");
+	}
+
 	int getRepeatCount(Context context) {
 		return getPreferences(context).getInt("repeatCount", 15);
 	}

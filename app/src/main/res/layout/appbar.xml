@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar
+<Toolbar
     android:id="@+id/appbar"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +23,7 @@
             android:textColor="?attr/colorPrimaryDark"
             android:textSize="@dimen/appbar_title"/>
 
-        <android.support.v7.widget.SwitchCompat
+        <Switch
             android:id="@+id/enableSwitch"
             style="@style/InputStyle"
             android:layout_width="wrap_content"
@@ -33,5 +33,5 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.Toolbar>
+</Toolbar>
 

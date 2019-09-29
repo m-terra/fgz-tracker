@@ -75,6 +75,7 @@ public class CheckerService extends Service {
 					}
 					userPrefs.setSiteContentAndResult(context, newContent, result);
 				}
+				userPrefs.setLastRun(context, time);
 				notifier.updateOngoingNotification(context, result);
 			}
 		}.execute();

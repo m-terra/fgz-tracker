@@ -12,6 +12,7 @@ public class ContentPreparer {
 		content = StringUtils.substringBetween(content, "Freie Objekte", "<script");
 		content = StringUtils.remove(content, " ");
 		content = StringUtils.remove(content, "\n");
+		content = StringUtils.remove(content, "\r");
 		return content;
 	}
 
