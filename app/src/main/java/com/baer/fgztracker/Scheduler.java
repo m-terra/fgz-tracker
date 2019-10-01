@@ -48,7 +48,7 @@ class Scheduler {
 				intent.putExtra(RESCHEDULE_FLAG, true);
 			}
 			PendingIntent pi = PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis() + i * interval * 60000, pi);
+			am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis() + i * interval * 60000, pi);
 		}
 
 		userPrefs.setAlarmIds(context, alarmIds);
